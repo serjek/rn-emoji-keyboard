@@ -37,10 +37,8 @@ export const KeyboardProvider: React.FC<ProviderProps> = React.memo((props) => {
 
   const [emojiTonesData, setEmojiTonesData] = React.useState<EmojiTonesData>(null)
 
-  const numberOfColumns = React.useRef<number>(
-    Math.floor(
-      width / ((props.emojiSize ? props.emojiSize : defaultKeyboardContext.emojiSize) * 2),
-    ),
+  const numberOfColumns = Math.max(1,
+    Math.floor(width / ((props.emojiSize || defaultKeyboardContext.emojiSize) * 2)),
   )
 
   // On initial render we want to display only emojis that are visible right away after keyboard open
@@ -57,10 +55,10 @@ export const KeyboardProvider: React.FC<ProviderProps> = React.memo((props) => {
     const keyboardHeight = height * (Number(keyboardHeightPercentage) / 100)
 
     const minimalEmojisAmount = Math.ceil(
-      (keyboardHeight / (emojiSize * 2)) * numberOfColumns.current,
+      (keyboardHeight / (emojiSize * 2)) * numberOfColumns,
     )
 
-    return minimalEmojisAmount + minimalEmojisAmount / numberOfColumns.current
+    return minimalEmojisAmount + minimalEmojisAmount / numberOfColumns
   }
 
   const minimalEmojisAmountToDisplay = calculateMinimalEmojisAmountToDisplay()
@@ -102,7 +100,7 @@ export const KeyboardProvider: React.FC<ProviderProps> = React.memo((props) => {
       })
 
       const skinTonePosition = generateToneSelectorPosition(
-        numberOfColumns.current,
+        numberOfColumns,
         emojiIndex,
         width,
         emojiSizes.width,
@@ -111,7 +109,7 @@ export const KeyboardProvider: React.FC<ProviderProps> = React.memo((props) => {
       )
 
       const funnelXPosition = generateToneSelectorFunnelPosition(
-        numberOfColumns.current,
+        numberOfColumns,
         emojiIndex,
         emojiSizes.width,
       )
@@ -122,7 +120,7 @@ export const KeyboardProvider: React.FC<ProviderProps> = React.memo((props) => {
         funnelXPosition,
       })
     },
-    [props.categoryPosition, props.enableSearchBar, width],
+    [props.categoryPosition, props.enableSearchBar, width, numberOfColumns],
   )
 
   const clearEmojiTonesData = () => setEmojiTonesData(null)
@@ -205,7 +203,7 @@ export const KeyboardProvider: React.FC<ProviderProps> = React.memo((props) => {
       styles: props.styles ? deepMerge(emptyStyles, props.styles) : emptyStyles,
       activeCategoryIndex,
       setActiveCategoryIndex,
-      numberOfColumns: numberOfColumns.current,
+      numberOfColumns: numberOfColumns,
       width,
       setWidth,
       searchPhrase,

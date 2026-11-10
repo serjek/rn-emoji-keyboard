@@ -2,6 +2,7 @@ import * as React from 'react'
 import {
   Modal,
   Animated,
+  Easing,
   useWindowDimensions,
   StyleSheet,
   TouchableOpacity,
@@ -30,14 +31,18 @@ export const ModalWithBackdrop = ({
   const handleTimeout = useTimeout()
 
   React.useEffect(() => {
-    Animated.spring(translateY, {
+    Animated.timing(translateY, {
+      duration: 200,
+      easing: Easing.out(Easing.cubic),
       toValue: isOpen ? 0 : screenHeight,
       useNativeDriver: true,
     }).start()
   }, [isOpen, screenHeight, translateY])
 
   const handleClose = () => {
-    Animated.spring(translateY, {
+    Animated.timing(translateY, {
+      duration: 200,
+      easing: Easing.out(Easing.cubic),
       toValue: screenHeight,
       useNativeDriver: true,
     }).start()

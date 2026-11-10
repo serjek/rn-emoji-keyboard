@@ -14,7 +14,6 @@ import { useKeyboardStore } from '../store/useKeyboardStore'
 import { parseEmoji } from '../utils/parseEmoji'
 import { removeSkinToneModifier } from '../utils/skinToneSelectorUtils'
 import { useKeyboard } from '../hooks/useKeyboard'
-import { InteractionManager } from 'react-native'
 
 const emptyEmoji: JsonEmoji = {
   emoji: '',
@@ -67,6 +66,8 @@ export const EmojiCategory = React.memo(
           emptyEmoji,
         )
         setEmpty(fillWithEmpty)
+      } else {
+        setEmpty([])
       }
     }, [numberOfColumns, data])
 
@@ -147,13 +148,11 @@ export const EmojiCategory = React.memo(
 
     const [maxIndex, setMaxIndex] = React.useState(0)
 
-    // with InteractionManager we can show emojis after interaction is finished
-    // It helps with delay during category change animation
-    InteractionManager.runAfterInteractions(() => {
-      if (maxIndex === 0 && data.length) {
-        setMaxIndex(minimalEmojisAmountToDisplay)
-      }
-    })
+    React.useEffect(() => {
+      if (maxIndex !== 0 || data.length === 0) return
+      const task = requestIdleCallback(() => setMaxIndex(minimalEmojisAmountToDisplay))
+      return () => cancelIdleCallback(task)
+    }, [maxIndex, data.length, minimalEmojisAmountToDisplay])
 
     const onEndReached = () => {
       if (maxIndex <= data.length) {
@@ -178,6 +177,7 @@ export const EmojiCategory = React.memo(
         )}
         {flatListData.length === 0 ? null : (
           <FlatList
+            key={numberOfColumns}
             data={[...flatListData, ...empty]}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.3}

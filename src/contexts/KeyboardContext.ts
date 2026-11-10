@@ -84,6 +84,7 @@ export type KeyboardProps = {
   enableSearchBar?: boolean
   hideSearchBarClearIcon?: boolean
   customButtons?: React.ReactNode
+  preview?: React.ReactNode
   categoryOrder?: CategoryTypes[]
   onRequestClose?: () => void
   disableSafeArea?: boolean
@@ -179,6 +180,7 @@ export const defaultKeyboardContext: Required<KeyboardProps> & {
   enableSearchBar: false,
   hideSearchBarClearIcon: false,
   customButtons: null,
+  preview: null,
   categoryOrder: [...CATEGORIES],
   onRequestClose: () => {},
   disableSafeArea: false,

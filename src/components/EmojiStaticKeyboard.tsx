@@ -135,7 +135,6 @@ export const EmojiStaticKeyboard = React.memo(
           themeStyles.container,
           { backgroundColor: theme.container },
         ]}
-        onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       >
         <ConditionalContainer
           condition={!disableSafeArea}
@@ -161,6 +160,7 @@ export const EmojiStaticKeyboard = React.memo(
               {customButtons}
             </View>
             <Animated.FlatList<EmojisByCategory>
+              onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
               extraData={[keyboardState.recentlyUsed.length, searchPhrase]}
               data={renderList}
               keyExtractor={keyExtractor}
