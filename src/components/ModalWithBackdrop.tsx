@@ -50,7 +50,8 @@ export const ModalWithBackdrop = ({
   }
 
   return (
-    <Modal visible={isOpen} animationType="fade" transparent={true} {...rest}>
+    <Modal visible={isOpen} animationType="fade" transparent={true}
+      supportedOrientations={['portrait', 'portrait-upside-down', 'landscape-left', 'landscape-right']} {...rest}>
       <TouchableOpacity
         style={[styles.modalContainer, { backgroundColor: theme.backdrop }]}
         activeOpacity={1}

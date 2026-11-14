@@ -54,6 +54,7 @@ export const EmojiStaticKeyboard = React.memo(
     )
 
     const [keyboardScrollOffsetY, setKeyboardScrollOffsetY] = React.useState(0)
+    const [pageHeight, setPageHeight] = React.useState<number>()
 
     const renderItem = React.useCallback(
       (props) => {
@@ -83,6 +84,14 @@ export const EmojiStaticKeyboard = React.memo(
         }
       },
       [activeCategoryIndex],
+    )
+
+    // A measured page bounds the virtualized grid on native and web.
+    const renderPage = React.useCallback(
+      (props: { item: EmojisByCategory; index: number }) => (
+        <View style={{ height: pageHeight }}>{renderItem(props)}</View>
+      ),
+      [renderItem, pageHeight],
     )
 
     const scrollEmojiCategoryListToIndex = React.useCallback(
@@ -160,11 +169,14 @@ export const EmojiStaticKeyboard = React.memo(
               {customButtons}
             </View>
             <Animated.FlatList<EmojisByCategory>
-              onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+              onLayout={(e) => {
+                setWidth(e.nativeEvent.layout.width)
+                setPageHeight(e.nativeEvent.layout.height)
+              }}
               extraData={[keyboardState.recentlyUsed.length, searchPhrase]}
               data={renderList}
               keyExtractor={keyExtractor}
-              renderItem={renderItem}
+              renderItem={renderPage}
               removeClippedSubviews={isAndroid}
               ref={flatListRef}
               onScrollToIndexFailed={onCategoryChangeFailed}
